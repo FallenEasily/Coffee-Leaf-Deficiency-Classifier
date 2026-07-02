@@ -1,0 +1,20 @@
+*.iml
+.gradle
+/local.properties
+/.idea
+.DS_Store
+build/
+/captures
+.externalNativeBuild
+.cxx
+local.properties
+
+# AI Model Weights (Keep this - it's the huge file!)
+*.ptl
+*.tflite
+*.pb
+*.h5
+*.pth
+*.pt
+# Java Heap Dump File
+*.hprof
