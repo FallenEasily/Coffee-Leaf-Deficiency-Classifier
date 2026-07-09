@@ -6,6 +6,7 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
+import com.aiclassifier.R
 import com.aiclassifier.databinding.ActivityResultBinding
 import com.aiclassifier.ml.models.ClassificationResult
 import com.aiclassifier.ml.models.DetectionResult
@@ -42,7 +43,6 @@ class ResultActivity : AppCompatActivity() {
             return
         }
 
-        // Restore the model the user selected in MainActivity
         val modelName = intent.getStringExtra(EXTRA_MODEL_NAME)
         val modelType = modelName?.let {
             runCatching { ModelType.valueOf(it) }.getOrNull()
@@ -51,6 +51,29 @@ class ResultActivity : AppCompatActivity() {
 
         binding.imagePreview.setImageBitmap(bitmap)
         viewModel.runInference(bitmap)
+
+        val buttonClassification = binding.button2
+        val buttonDescription = binding.button
+        val originalContent = binding.originalContent
+
+        buttonClassification.setOnClickListener {
+            val fragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+            if (fragment != null) {
+                supportFragmentManager.beginTransaction().remove(fragment).commit()
+            }
+            originalContent.visibility = View.VISIBLE
+        }
+
+        buttonDescription.setOnClickListener {
+            originalContent.visibility = View.GONE
+
+            val existingFragment = supportFragmentManager.findFragmentById(R.id.fragment_container)
+            if (existingFragment == null || existingFragment !is DescriptionFragment) {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.fragment_container, DescriptionFragment())
+                    .commit()
+            }
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -69,31 +92,42 @@ class ResultActivity : AppCompatActivity() {
     private fun observeViewModel() {
         viewModel.uiState.observe(this) { state ->
             when (state) {
-                is UiState.Idle -> { /* do nothing */ }
+                is UiState.Idle -> {
+                    // Show buttons when idle (before loading starts)
+                    binding.buttonContainer.visibility = View.VISIBLE
+                }
 
                 is UiState.Loading -> {
                     binding.progressBar.visibility = View.VISIBLE
-                    binding.cardResult.visibility  = View.GONE
+                    binding.cardResult.visibility = View.GONE
                     binding.cardSimilar.visibility = View.GONE
+                    // ===== HIDE THE BUTTONS DURING LOADING =====
+                    binding.buttonContainer.visibility = View.GONE
                 }
 
                 is UiState.ClassifySuccess -> {
                     binding.progressBar.visibility = View.GONE
+                    // ===== SHOW THE BUTTONS WHEN SUCCESSFUL =====
+                    binding.buttonContainer.visibility = View.VISIBLE
                     showClassificationResult(state.result)
                     showSimilarImages(state.similarImages.mapNotNull { it.url })
                 }
 
                 is UiState.DetectSuccess -> {
                     binding.progressBar.visibility = View.GONE
+                    // ===== SHOW THE BUTTONS WHEN SUCCESSFUL =====
+                    binding.buttonContainer.visibility = View.VISIBLE
                     showDetectionResult(state.result)
                     showSimilarImages(state.similarImages.mapNotNull { it.url })
                 }
 
                 is UiState.Error -> {
                     binding.progressBar.visibility = View.GONE
-                    binding.cardResult.visibility  = View.VISIBLE
-                    binding.tvPrimaryLabel.text    = "Error"
-                    binding.tvDetails.text         = state.message
+                    // ===== SHOW THE BUTTONS EVEN ON ERROR =====
+                    binding.buttonContainer.visibility = View.VISIBLE
+                    binding.cardResult.visibility = View.VISIBLE
+                    binding.tvPrimaryLabel.text = "Error"
+                    binding.tvDetails.text = state.message
                     binding.cardSimilar.visibility = View.GONE
                 }
             }
@@ -104,9 +138,9 @@ class ResultActivity : AppCompatActivity() {
         binding.cardResult.visibility = View.VISIBLE
         val top = result.topLabels.firstOrNull()
         binding.tvPrimaryLabel.text = top?.label ?: "Unknown"
-        binding.tvConfidence.text   = top?.let { "%.1f%%".format(it.score * 100) } ?: ""
-        binding.tvModel.text        = "Model: ${result.modelType.displayName}"
-        binding.tvInference.text    = "Inference: ${result.inferenceTimeMs} ms"
+        binding.tvConfidence.text = top?.let { "%.1f%%".format(it.score * 100) } ?: ""
+        binding.tvModel.text = "Model: ${result.modelType.displayName}"
+        binding.tvInference.text = "Inference: ${result.inferenceTimeMs} ms"
 
         val details = result.topLabels.joinToString("\n") { ls ->
             "%-20s  %.1f%%".format(ls.label, ls.score * 100)
@@ -118,9 +152,9 @@ class ResultActivity : AppCompatActivity() {
         binding.cardResult.visibility = View.VISIBLE
         val top = result.detections.firstOrNull()
         binding.tvPrimaryLabel.text = top?.label ?: "Nothing detected"
-        binding.tvConfidence.text   = top?.let { "%.1f%%".format(it.confidence * 100) } ?: ""
-        binding.tvModel.text        = "Model: ${result.modelType.displayName}"
-        binding.tvInference.text    = "Inference: ${result.inferenceTimeMs} ms"
+        binding.tvConfidence.text = top?.let { "%.1f%%".format(it.confidence * 100) } ?: ""
+        binding.tvModel.text = "Model: ${result.modelType.displayName}"
+        binding.tvInference.text = "Inference: ${result.inferenceTimeMs} ms"
 
         val details = result.detections.take(5).joinToString("\n") { d ->
             "%-20s  %.1f%%".format(d.label, d.confidence * 100)
