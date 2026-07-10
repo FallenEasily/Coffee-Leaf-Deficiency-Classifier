@@ -13,6 +13,7 @@ local.properties
 *.tflite
 *.pb
 *.h5
+*.ptl
 *.pth
 *.pt
 # Java Heap Dump File
