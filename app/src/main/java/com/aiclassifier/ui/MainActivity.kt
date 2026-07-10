@@ -86,6 +86,12 @@ class MainActivity : AppCompatActivity() {
         binding.spinnerModel.adapter = adapter
         binding.spinnerModel.setSelection(ModelType.values().indexOf(ModelType.default()))
 
+        if (modelNames.size <= 1) {
+            binding.spinnerModel.isEnabled = false
+        } else {
+            binding.spinnerModel.isEnabled = true
+        }
+
         binding.spinnerModel.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: AdapterView<*>, view: View?, pos: Int, id: Long) {
                 viewModel.selectModel(ModelType.values()[pos])

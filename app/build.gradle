@@ -16,12 +16,15 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
-        // Roboflow API key placeholder — add yours in local.properties
-        // and reference it here, or hardcode for development
         buildConfigField "String", "ROBOFLOW_API_KEY", '"aaShqpUaGWAQ9mW85hs2"'
         buildConfigField "String", "ROBOFLOW_WORKSPACE", '"coffee-leaf-nutrional-deficiency"'
         buildConfigField "String", "ROBOFLOW_PROJECT",   '"coffee-mineral-deficiency"'
         buildConfigField "String", "ROBOFLOW_VERSION",   '"3"'
+
+        // Force native library extraction (fixes Android 8-9 issues)
+        manifestPlaceholders = [
+                extractNativeLibs: 'true'
+        ]
     }
 
     buildTypes {
@@ -45,16 +48,35 @@ android {
         buildConfig true
     }
 
-    // Required for PyTorch Mobile — exclude duplicate native libs
+    // ========== FIXED: More complete packaging options ==========
     packagingOptions {
         pickFirst 'lib/x86/libc++_shared.so'
         pickFirst 'lib/x86_64/libc++_shared.so'
         pickFirst 'lib/armeabi-v7a/libc++_shared.so'
         pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        // PyTorch JNI libraries
+        pickFirst 'lib/x86/libpytorch_jni.so'
+        pickFirst 'lib/x86_64/libpytorch_jni.so'
+        pickFirst 'lib/armeabi-v7a/libpytorch_jni.so'
+        pickFirst 'lib/arm64-v8a/libpytorch_jni.so'
+        // Any other .so files that might conflict
+        pickFirst '**/*.so'
     }
 
+    // ========== FIXED: Assets config ==========
     aaptOptions {
         noCompress "ptl"
+        noCompress "torchscript"
+        noCompress "onnx"
+
+        ignoreAssetsPattern "!.ptl:!.torchscript"
+    }
+
+    // ========== FIXED: Source sets for native libs ==========
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['src/main/jniLibs']
+        }
     }
 }
 
@@ -102,6 +124,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(17)
