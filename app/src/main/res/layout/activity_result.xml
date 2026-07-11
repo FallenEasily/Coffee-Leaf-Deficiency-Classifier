@@ -20,43 +20,64 @@
             android:contentDescription="Captured image"/>
 
         <!-- Loading indicator -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/transparent"
+            android:layout_marginVertical="8dp" />
 
         <LinearLayout
             android:id="@+id/buttonContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
             >
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="#808080" />
 
             <Button
                 android:id="@+id/button2"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:backgroundTint="@android:color/transparent"
-                android:text="Classification"
-                android:textColor="?android:attr/textColorPrimary"
-                app:cornerRadius="0dp"
+                android:backgroundTint="@color/purple_500"
+                android:text="CLASSIFICATION"
+                android:textColor="@color/white"
+                app:cornerRadius="10dp"
                 android:layout_weight="1"
                 />
 
             <View
-                android:layout_width="2dp"
+                android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
                 android:background="#808080" />
 
             <Button
                 android:id="@+id/button"
+
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/transparent"
-                android:text="Description"
-                android:textColor="?android:attr/textColorPrimary"
-                app:cornerRadius="0dp"
+                android:backgroundTint="@color/purple_500"
+                android:text="DESCRIPTION"
+                android:textColor="@color/white"
+                app:cornerRadius="10dp"
                 android:layout_weight="1"
                 />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:background="#808080" />
+
         </LinearLayout>
 
         <!-- Fragment Container (holds both original content and the new fragment) -->
@@ -180,7 +201,7 @@
                 <!-- Bottom spacer -->
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="20dp" />
+                    android:layout_height="match_parent" />
 
             </LinearLayout>
         </FrameLayout>

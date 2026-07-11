@@ -15,6 +15,7 @@
         android:textStyle="bold"
         android:textColor="?android:attr/textColorPrimary"
         android:lineSpacingExtra="4dp"
+        android:layout_gravity="center"
         />
 
     <com.google.android.material.card.MaterialCardView
@@ -38,8 +39,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Characteristic"
-                android:textSize="32sp"
-                android:textStyle="bold"
+                android:textSize="26sp"
                 android:textColor="?android:attr/textColorPrimary"
 
                 />
@@ -55,7 +55,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Your description here..."
-                android:textSize="20sp"
+                android:textSize="12sp"
                 android:textColor="?android:attr/textColorPrimary"
                 />
 
