@@ -128,6 +128,7 @@ class ResultActivity : AppCompatActivity() {
                     binding.cardResult.visibility = View.VISIBLE
                     binding.tvPrimaryLabel.text = "Error"
                     binding.tvDetails.text = state.message
+                    binding.tvScores.text = state.message
                     binding.cardSimilar.visibility = View.GONE
                 }
             }
@@ -142,10 +143,15 @@ class ResultActivity : AppCompatActivity() {
         binding.tvModel.text = "Model: ${result.modelType.displayName}"
         binding.tvInference.text = "Inference: ${result.inferenceTimeMs} ms"
 
-        val details = result.topLabels.joinToString("\n") { ls ->
-            "%-20s  %.1f%%".format(ls.label, ls.score * 100)
-        }
+//        val details = result.topLabels.joinToString("\n") { ls ->
+//            "%-20s  %.1f%%".format(ls.label, ls.score * 100)
+//        }
+
+        val details = result.topLabels.joinToString("\n"){it.label}
+        val scores = result.topLabels.joinToString("\n") { ls ->"%.1f%%".format(ls.score*100)}
+
         binding.tvDetails.text = details
+        binding.tvScores.text = scores
     }
 
     private fun showDetectionResult(result: DetectionResult) {
