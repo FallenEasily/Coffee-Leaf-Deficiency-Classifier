@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="centerCrop"
-        android:contentDescription="Similar dataset image"
+        android:contentDescription="Gambar serupa dataset"
         />
 
 </com.google.android.material.card.MaterialCardView>
