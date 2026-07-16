@@ -16,5 +16,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "AIClassifierApp"
+rootProject.name = "CoffeeLeafClassifierApp"
 include ':app'
